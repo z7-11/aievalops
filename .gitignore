@@ -1,0 +1,33 @@
+# Node.js
+node_modules/
+node_modules.failed-install-*/
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Generated evaluation results
+results/*
+!results/.gitkeep
+
+# Logs
+*.log
+
+# IDE
+.vscode/
+.idea/
+
+# System
+.DS_Store
+Thumbs.db

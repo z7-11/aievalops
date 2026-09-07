@@ -1,0 +1,19 @@
+{
+  "name": "aievalops",
+  "version": "0.1.0",
+  "description": "LLM automated evaluation and quality gate platform",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "eval": "promptfoo eval --no-cache -c evals/promptfooconfig.yaml -o results/eval.json -o results/report.html",
+    "report": "promptfoo view"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "promptfoo": "0.122.2"
+  }
+}
