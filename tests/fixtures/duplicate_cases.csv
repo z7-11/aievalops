@@ -1,0 +1,3 @@
+case_id,module,priority,question,expected_keywords,forbidden_keywords,max_latency_ms,security_category
+duplicate_001,refund,P0,商品可以退款吗,7天,,1000,functional
+duplicate_001,refund,P0,退款流程是什么,订单详情页,,1000,functional

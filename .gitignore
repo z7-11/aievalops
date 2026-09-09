@@ -11,6 +11,7 @@ __pycache__/
 .coverage
 coverage.xml
 htmlcov/
+tmp/
 
 # Environment variables
 .env
@@ -20,6 +21,10 @@ htmlcov/
 # Generated evaluation results
 results/*
 !results/.gitkeep
+
+# Generated test data
+data/generated/*
+!data/generated/.gitkeep
 
 # Logs
 *.log
