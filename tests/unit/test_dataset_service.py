@@ -8,7 +8,6 @@ from app.services.dataset_service import (
     split_keywords,
 )
 
-
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 NORMAL_CSV_PATH = (

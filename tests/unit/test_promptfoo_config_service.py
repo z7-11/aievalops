@@ -2,15 +2,15 @@ from pathlib import Path
 
 import yaml
 
-from app.schemas.test_case import TestCaseRecord
+from app.schemas.test_case import TestCaseRecord as CaseRecord
 from app.services.promptfoo_config_service import (
     build_promptfoo_config,
     write_promptfoo_config,
 )
 
 
-def create_test_case() -> TestCaseRecord:
-    return TestCaseRecord(
+def create_test_case() -> CaseRecord:
+    return CaseRecord(
         case_id="refund_001",
         module="refund",
         priority="P0",

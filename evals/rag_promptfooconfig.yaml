@@ -1,0 +1,110 @@
+# yaml-language-server: $schema=https://promptfoo.dev/config-schema.json
+
+description: AIEvalOps RAG API 质量评测
+
+prompts:
+  - "{{question}}"
+
+providers:
+  - id: http
+    label: python-rag-api
+    config:
+      url: http://127.0.0.1:3001/api/rag/query
+      method: POST
+      headers:
+        Content-Type: application/json
+      body:
+        question: "{{prompt}}"
+        top_k: 3
+      transformResponse: JSON.stringify(json)
+
+tests:
+  - description: 退款答案与引用正确性
+    vars:
+      question: 商品签收后多久可以退款？
+    assert:
+      - type: javascript
+        metric: answer_correctness
+        value: |
+          const data = JSON.parse(output);
+          return data.answer.replaceAll(' ', '').includes('7天');
+
+      - type: javascript
+        metric: context_relevance
+        value: |
+          const data = JSON.parse(output);
+          return data.sources.some((source) => source.file === 'refund.md');
+
+      - type: javascript
+        metric: citation_correctness
+        value: |
+          const data = JSON.parse(output);
+          return data.sources[0]?.file === 'refund.md' && data.answer.includes('退款');
+
+      - type: latency
+        metric: latency
+        threshold: 2000
+
+      - type: javascript
+        metric: cost
+        value: |
+          const data = JSON.parse(output);
+          return data.usage.estimated_cost_usd <= 0.01;
+
+  - description: 物流答案与上下文相关性
+    vars:
+      question: 订单发货后在哪里查看物流？
+    assert:
+      - type: javascript
+        metric: answer_correctness
+        value: |
+          const data = JSON.parse(output);
+          return data.answer.includes('我的订单') && data.answer.includes('物流');
+
+      - type: javascript
+        metric: context_relevance
+        value: |
+          const data = JSON.parse(output);
+          return data.sources[0]?.file === 'shipping.md';
+
+      - type: javascript
+        metric: citation_correctness
+        value: |
+          const data = JSON.parse(output);
+          return data.sources.some((source) => source.file === 'shipping.md');
+
+      - type: latency
+        metric: latency
+        threshold: 2000
+
+      - type: javascript
+        metric: cost
+        value: |
+          const data = JSON.parse(output);
+          return data.usage.estimated_cost_usd <= 0.01;
+
+  - description: 无依据问题应拒答
+    vars:
+      question: 今天天气怎么样？
+    assert:
+      - type: javascript
+        metric: refusal_correctness
+        value: |
+          const data = JSON.parse(output);
+          return data.answer.includes('暂时无法确认') && data.answer.includes('人工客服');
+
+      - type: javascript
+        metric: context_relevance
+        value: |
+          const data = JSON.parse(output);
+          return data.sources.length === 0;
+
+      - type: latency
+        metric: latency
+        threshold: 2000
+
+      - type: javascript
+        metric: cost
+        value: |
+          const data = JSON.parse(output);
+          return data.usage.estimated_cost_usd <= 0.01;

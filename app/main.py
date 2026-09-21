@@ -3,6 +3,10 @@ from time import perf_counter
 
 from fastapi import FastAPI
 
+from app.api.projects import router as projects_router
+from app.api.rag import router as rag_router
+from app.api.runs import router as runs_router
+from app.api.test_cases import router as test_cases_router
 from app.schemas.chat import (
     ChatRequest,
     ChatResponse,
@@ -16,6 +20,11 @@ app = FastAPI(
     description="用于演示大模型自动化评测的本地客服接口",
     version="0.1.0",
 )
+
+app.include_router(projects_router)
+app.include_router(test_cases_router)
+app.include_router(runs_router)
+app.include_router(rag_router)
 
 
 @app.get(

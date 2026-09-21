@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "eval": "promptfoo eval --no-cache -c evals/promptfooconfig.yaml -o results/eval.json -o results/report.html",
+    "eval:rag": "promptfoo eval --no-cache -c evals/rag_promptfooconfig.yaml -o results/rag-eval.json -o results/rag-report.html",
     "report": "promptfoo view"
   },
   "keywords": [],
