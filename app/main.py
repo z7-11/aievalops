@@ -3,6 +3,7 @@ from time import perf_counter
 
 from fastapi import FastAPI
 
+from app.api.baselines import router as baselines_router
 from app.api.projects import router as projects_router
 from app.api.rag import router as rag_router
 from app.api.runs import router as runs_router
@@ -25,6 +26,7 @@ app.include_router(projects_router)
 app.include_router(test_cases_router)
 app.include_router(runs_router)
 app.include_router(rag_router)
+app.include_router(baselines_router)
 
 
 @app.get(

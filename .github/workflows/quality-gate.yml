@@ -1,0 +1,194 @@
+name: AIEvalOps Quality Gate
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: quality-gate-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality-gate:
+    name: Python tests and LLM quality gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    env:
+      PYTHONUTF8: "1"
+      PYTHONUNBUFFERED: "1"
+
+      APP_ENV: "test"
+      DATABASE_URL: "sqlite+pysqlite:///:memory:"
+      REDIS_URL: "redis://127.0.0.1:6379/0"
+      LLM_MOCK_MODE: "true"
+
+      PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+      PROMPTFOO_DISABLE_TELEMETRY: "1"
+      PROMPTFOO_DISABLE_UPDATE: "1"
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-dev.txt
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Prepare report directory
+        run: mkdir -p results
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-dev.txt
+          python -m pip check
+
+      - name: Install Node.js dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Check Python code
+        run: |
+          python -m ruff check app tests scripts/check_quality_gate.py
+
+      - name: Run Python tests
+        run: |
+          python -m pytest tests -v \
+            --junitxml=results/pytest.xml
+
+      - name: Validate baseline report
+        run: |
+          python -m app.services.result_parser \
+            --input baselines/baseline-v1.json \
+            > results/baseline-summary.json
+
+      - name: Start FastAPI
+        run: |
+          python -m uvicorn app.main:app \
+            --host 127.0.0.1 \
+            --port 3001 \
+            > results/server.log 2>&1 &
+
+          echo "$!" > results/server.pid
+
+      - name: Wait for FastAPI
+        run: |
+          python - <<'PY'
+          import json
+          import time
+          import urllib.error
+          import urllib.request
+
+          url = "http://127.0.0.1:3001/health"
+
+          for attempt in range(30):
+              try:
+                  with urllib.request.urlopen(url, timeout=2) as response:
+                      data = json.load(response)
+
+                  if data.get("status") == "ok":
+                      print("FastAPI is ready")
+                      break
+              except (
+                  urllib.error.URLError,
+                  TimeoutError,
+                  ValueError,
+              ):
+                  pass
+
+              time.sleep(1)
+          else:
+              raise SystemExit("FastAPI did not become healthy in time")
+          PY
+
+      - name: Run Promptfoo evaluation
+        id: eval
+        run: |
+          set +e
+
+          ./node_modules/.bin/promptfoo eval \
+            --no-cache \
+            -c evals/promptfooconfig.yaml \
+            -o results/eval.json \
+            -o results/report.html \
+            > results/promptfoo.log 2>&1
+
+          eval_code=$?
+          set -e
+
+          cat results/promptfoo.log
+
+          echo "exit_code=$eval_code" >> "$GITHUB_OUTPUT"
+
+          if [ ! -s results/eval.json ]; then
+            echo "Promptfoo did not produce a JSON report"
+            exit 1
+          fi
+
+      - name: Check quality gate
+        run: |
+          set -o pipefail
+
+          python scripts/check_quality_gate.py \
+            --result results/eval.json \
+            --config quality-gate.yaml \
+            --baseline baselines/baseline-v1.json \
+            2>&1 | tee results/quality-gate.log
+
+      - name: Check Promptfoo exit status
+        if: ${{ success() }}
+        env:
+          EVAL_EXIT_CODE: ${{ steps.eval.outputs.exit_code }}
+        run: |
+          if [ "$EVAL_EXIT_CODE" != "0" ]; then
+            echo "Promptfoo returned non-zero exit code: $EVAL_EXIT_CODE"
+            exit 1
+          fi
+
+      - name: Stop FastAPI
+        if: ${{ always() }}
+        run: |
+          if [ -f results/server.pid ]; then
+            server_pid=$(cat results/server.pid)
+            kill "$server_pid" 2>/dev/null || true
+          fi
+
+      - name: Upload test reports
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: quality-reports-${{ github.run_id }}-${{ github.run_attempt }}
+          if-no-files-found: warn
+          retention-days: 7
+          path: |
+            results/pytest.xml
+            results/eval.json
+            results/report.html
+            results/baseline-summary.json
+            results/server.log
+            results/promptfoo.log
+            results/quality-gate.log
