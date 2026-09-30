@@ -36,3 +36,13 @@ data/generated/*
 # System
 .DS_Store
 Thumbs.db
+
+# Local vector database
+storage/chroma/*
+!storage/chroma/.gitkeep
+
+# Hugging Face model cache
+storage/huggingface/
+
+# RAG experiment output
+results/experiments/*
