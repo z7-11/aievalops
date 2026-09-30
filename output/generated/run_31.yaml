@@ -1,0 +1,25 @@
+description: AIEvalOps Python 客服接口自动评测
+prompts:
+- '{{question}}'
+providers:
+- id: http
+  label: python-customer-service-api
+  config:
+    url: http://127.0.0.1:3001/api/chat
+    method: POST
+    headers:
+      Content-Type: application/json
+    body:
+      question: '{{prompt}}'
+    transformResponse: json.answer
+tests:
+- description: intentional-fail-001 | 失败筛选测试 | P1
+  vars:
+    question: 普通退款问题
+  assert:
+  - type: contains
+    value: 这是一个绝对不存在的关键词
+    metric: answer_accuracy
+  - type: latency
+    threshold: 3000
+    metric: response_latency

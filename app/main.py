@@ -3,6 +3,11 @@ from time import perf_counter
 
 from fastapi import FastAPI
 
+from pathlib import Path
+
+from fastapi.staticfiles import StaticFiles
+
+from app.api.ui import router as ui_router
 from app.api.baselines import router as baselines_router
 from app.api.projects import router as projects_router
 from app.api.rag import router as rag_router
@@ -22,12 +27,24 @@ app = FastAPI(
     version="0.1.0",
 )
 
+PROJECT_ROOT = Path(__file__).resolve().parent
+
+app.mount(
+    "/static",
+    StaticFiles(
+        directory=str(
+            PROJECT_ROOT / "static"
+        ),
+    ),
+    name="static",
+)
+
 app.include_router(projects_router)
 app.include_router(test_cases_router)
 app.include_router(runs_router)
 app.include_router(rag_router)
 app.include_router(baselines_router)
-
+app.include_router(ui_router)
 
 @app.get(
     "/health",

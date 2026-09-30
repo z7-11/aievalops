@@ -1,0 +1,650 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AIEvalOps 评测控制台</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', path='styles.css') }}"
+    >
+</head>
+<body>
+    <header class="page-header">
+        <div>
+            <h1>AIEvalOps 评测控制台</h1>
+            <p>项目管理、测试任务和评测结果</p>
+        </div>
+
+        <button
+            id="refresh-projects-button"
+            class="secondary-button"
+        >
+            刷新项目
+        </button>
+    </header>
+
+    <main class="page-container">
+        <section class="panel">
+            <h2>创建项目</h2>
+
+            <form id="project-form">
+                <label for="project-name">
+                    项目名称
+                </label>
+
+                <input
+                    id="project-name"
+                    name="name"
+                    required
+                    maxlength="100"
+                    placeholder="例如：电商客服评测"
+                >
+
+                <label for="project-description">
+                    项目描述
+                </label>
+
+                <textarea
+                    id="project-description"
+                    name="description"
+                    maxlength="2000"
+                    placeholder="请输入项目描述"
+                ></textarea>
+
+                <label for="target-url">
+                    目标地址
+                </label>
+
+                <input
+                    id="target-url"
+                    name="target_url"
+                    required
+                    value="http://127.0.0.1:3001/api/chat"
+                >
+
+                <button
+                    type="submit"
+                    class="primary-button"
+                    data-testid="create-project-button"
+                >
+                    保存
+                </button>
+            </form>
+        </section>
+
+        <section class="panel">
+            <div class="section-title">
+                <h2>项目列表</h2>
+                <span id="project-count">0 个项目</span>
+            </div>
+
+            <div id="project-list">
+                <p class="empty-text">
+                    正在加载项目...
+                </p>
+            </div>
+        </section>
+
+        <section class="panel">
+            <div class="section-title">
+                <h2>评测任务</h2>
+
+                <button
+                    id="set-baseline-button"
+                    class="secondary-button"
+                    data-testid="set-baseline-button"
+                    disabled
+                >
+                    设置基线
+                </button>
+            </div>
+
+            <div class="run-summary">
+                <div>
+                    <span class="summary-label">任务 ID</span>
+                    <strong id="run-id">-</strong>
+                </div>
+
+                <div>
+                    <span class="summary-label">任务状态</span>
+                    <strong id="run-status">-</strong>
+                </div>
+
+                <div>
+                    <span class="summary-label">通过率</span>
+                    <strong id="pass-rate">-</strong>
+                </div>
+
+                <div>
+                    <span class="summary-label">总用例</span>
+                    <strong id="run-total">-</strong>
+                </div>
+
+                <div>
+                    <span class="summary-label">失败用例</span>
+                    <strong id="run-failed">-</strong>
+                </div>
+            </div>
+
+            <p id="run-message" class="message"></p>
+        </section>
+
+        <section class="panel">
+            <h2>失败用例</h2>
+
+            <div id="failed-case-list">
+                <p class="empty-text">
+                    暂无失败用例
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <div
+        id="toast"
+        class="toast"
+        role="alert"
+    ></div>
+
+    <script>
+        const state = {
+            selectedProjectId: null,
+            currentRunId: null,
+        };
+
+        const projectList =
+            document.getElementById("project-list");
+
+        const projectCount =
+            document.getElementById("project-count");
+
+        const runIdElement =
+            document.getElementById("run-id");
+
+        const runStatusElement =
+            document.getElementById("run-status");
+
+        const passRateElement =
+            document.getElementById("pass-rate");
+
+        const runTotalElement =
+            document.getElementById("run-total");
+
+        const runFailedElement =
+            document.getElementById("run-failed");
+
+        const runMessageElement =
+            document.getElementById("run-message");
+
+        const failedCaseList =
+            document.getElementById("failed-case-list");
+
+        const setBaselineButton =
+            document.getElementById(
+                "set-baseline-button"
+            );
+
+        function escapeHtml(value) {
+            return String(value ?? "")
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;")
+                .replaceAll("'", "&#039;");
+        }
+
+        function showMessage(message, isError = false) {
+            const toast =
+                document.getElementById("toast");
+
+            toast.textContent = message;
+            toast.className = isError
+                ? "toast error visible"
+                : "toast visible";
+
+            window.setTimeout(() => {
+                toast.className = "toast";
+            }, 3000);
+        }
+
+        async function requestJson(
+            url,
+            options = {},
+        ) {
+            const response = await fetch(
+                url,
+                {
+                    headers: {
+                        "Content-Type":
+                            "application/json",
+                        ...(options.headers || {}),
+                    },
+                    ...options,
+                },
+            );
+
+            if (!response.ok) {
+                let detail = `请求失败：${response.status}`;
+
+                try {
+                    const body =
+                        await response.json();
+
+                    detail =
+                        body.detail || detail;
+                } catch {
+                    // 保留默认错误信息。
+                }
+
+                throw new Error(detail);
+            }
+
+            if (response.status === 204) {
+                return null;
+            }
+
+            return response.json();
+        }
+
+        function renderProjects(projects) {
+            projectCount.textContent =
+                `${projects.length} 个项目`;
+
+            if (!projects.length) {
+                projectList.innerHTML = `
+                    <p class="empty-text">
+                        暂无项目，请先创建项目。
+                    </p>
+                `;
+                return;
+            }
+
+            projectList.innerHTML = projects
+                .map((project) => `
+                    <article class="project-card">
+                        <div class="project-card-content">
+                            <h3>
+                                ${escapeHtml(project.name)}
+                            </h3>
+
+                            <p>
+                                ${escapeHtml(
+                                    project.description
+                                    || "暂无描述",
+                                )}
+                            </p>
+
+                            <small>
+                                ID：${project.id}
+                            </small>
+
+                            <small>
+                                接口：
+                                ${escapeHtml(
+                                    project.target_url,
+                                )}
+                            </small>
+                        </div>
+
+                        <div class="project-actions">
+                            <button
+                                class="secondary-button"
+                                data-action="import-cases"
+                                data-project-id="${project.id}"
+                                data-testid="import-test-cases-button"
+                            >
+                                导入测试用例
+                            </button>
+
+                            <button
+                                class="primary-button"
+                                data-action="create-run"
+                                data-project-id="${project.id}"
+                                data-testid="run-evaluation-button"
+                            >
+                                创建评测任务
+                            </button>
+                        </div>
+                    </article>
+                `)
+                .join("");
+        }
+
+        async function loadProjects() {
+            try {
+                const projects =
+                    await requestJson("/api/projects");
+
+                renderProjects(projects);
+            } catch (error) {
+                projectList.innerHTML = `
+                    <p class="error-text">
+                        ${escapeHtml(error.message)}
+                    </p>
+                `;
+            }
+        }
+
+        async function createProject(event) {
+            event.preventDefault();
+
+            const name =
+                document.getElementById(
+                    "project-name",
+                ).value.trim();
+
+            const description =
+                document.getElementById(
+                    "project-description",
+                ).value.trim();
+
+            const targetUrl =
+                document.getElementById(
+                    "target-url",
+                ).value.trim();
+
+            try {
+                await requestJson(
+                    "/api/projects",
+                    {
+                        method: "POST",
+                        body: JSON.stringify({
+                            name,
+                            description,
+                            target_url: targetUrl,
+                        }),
+                    },
+                );
+
+                event.target.reset();
+
+                document.getElementById(
+                    "target-url",
+                ).value =
+                    "http://127.0.0.1:3001/api/chat";
+
+                showMessage("项目创建成功");
+
+                await loadProjects();
+            } catch (error) {
+                showMessage(
+                    error.message,
+                    true,
+                );
+            }
+        }
+
+        async function createRun(projectId) {
+            state.selectedProjectId = projectId;
+
+            try {
+                const result =
+                    await requestJson(
+                        `/api/projects/${projectId}/runs`,
+                        {
+                            method: "POST",
+                        },
+                    );
+
+                state.currentRunId =
+                    result.run_id;
+
+                runIdElement.textContent =
+                    result.run_id;
+
+                runStatusElement.textContent =
+                    result.status;
+
+                runMessageElement.textContent =
+                    "评测任务已创建，正在等待后台执行...";
+
+                setBaselineButton.disabled =
+                    true;
+
+                await pollRun(result.run_id);
+            } catch (error) {
+                showMessage(
+                    error.message,
+                    true,
+                );
+            }
+        }
+
+        async function pollRun(runId) {
+            const terminalStatuses = [
+                "SUCCEEDED",
+                "FAILED",
+                "CANCELLED",
+            ];
+
+            for (let index = 0; index < 60; index += 1) {
+                const run =
+                    await requestJson(
+                        `/api/runs/${runId}`,
+                    );
+
+                runStatusElement.textContent =
+                    run.status;
+
+                runTotalElement.textContent =
+                    run.total;
+
+                runFailedElement.textContent =
+                    run.failed;
+
+                passRateElement.textContent =
+                    run.pass_rate === null
+                        ? "-"
+                        : `${(
+                            run.pass_rate * 100
+                        ).toFixed(2)}%`;
+
+                if (run.error_message) {
+                    runMessageElement.textContent =
+                        run.error_message;
+                }
+
+                if (
+                    terminalStatuses.includes(
+                        run.status,
+                    )
+                ) {
+                    if (
+                        run.status === "SUCCEEDED"
+                    ) {
+                        runMessageElement.textContent =
+                            "评测任务执行完成";
+                        setBaselineButton.disabled =
+                            false;
+                    }
+
+                    await loadResults(runId);
+                    return;
+                }
+
+                await new Promise(
+                    (resolve) => {
+                        window.setTimeout(
+                            resolve,
+                            2000,
+                        );
+                    },
+                );
+            }
+
+            runMessageElement.textContent =
+                "任务轮询超过 2 分钟，请手动刷新。";
+        }
+
+        async function loadResults(runId) {
+            const results =
+                await requestJson(
+                    `/api/runs/${runId}/results`,
+                );
+
+            const failedResults =
+                results.filter(
+                    (item) => !item.passed,
+                );
+
+            if (!failedResults.length) {
+                failedCaseList.innerHTML = `
+                    <p class="success-text">
+                        暂无失败用例
+                    </p>
+                `;
+                return;
+            }
+
+            failedCaseList.innerHTML =
+                failedResults
+                    .map((item) => `
+                        <div class="failed-case">
+                            <strong>
+                                测试用例 ID：
+                                ${item.test_case_id}
+                            </strong>
+
+                            <p>
+                                原因：
+                                ${escapeHtml(
+                                    item.reason
+                                    || "未提供原因",
+                                )}
+                            </p>
+
+                            <p>
+                                输出：
+                                ${escapeHtml(
+                                    item.output,
+                                )}
+                            </p>
+                        </div>
+                    `)
+                    .join("");
+        }
+
+        async function importCases(projectId) {
+            const rawJson = window.prompt(
+                "请粘贴测试用例 JSON 数组",
+            );
+
+            if (!rawJson) {
+                return;
+            }
+
+            try {
+                const cases = JSON.parse(rawJson);
+
+                if (!Array.isArray(cases)) {
+                    throw new Error(
+                        "必须输入 JSON 数组",
+                    );
+                }
+
+                await requestJson(
+                    `/api/projects/${projectId}/test-cases/import`,
+                    {
+                        method: "POST",
+                        body: JSON.stringify({
+                            cases,
+                        }),
+                    },
+                );
+
+                showMessage(
+                    "测试用例导入成功",
+                );
+            } catch (error) {
+                showMessage(
+                    error.message,
+                    true,
+                );
+            }
+        }
+
+        async function setBaseline() {
+            if (!state.currentRunId) {
+                showMessage(
+                    "请先完成一个评测任务",
+                    true,
+                );
+                return;
+            }
+
+            try {
+                await requestJson(
+                    `/api/runs/${state.currentRunId}/set-baseline`,
+                    {
+                        method: "POST",
+                    },
+                );
+
+                showMessage("基线设置成功");
+            } catch (error) {
+                showMessage(
+                    error.message,
+                    true,
+                );
+            }
+        }
+
+        document
+            .getElementById("project-form")
+            .addEventListener(
+                "submit",
+                createProject,
+            );
+
+        document
+            .getElementById(
+                "refresh-projects-button",
+            )
+            .addEventListener(
+                "click",
+                loadProjects,
+            );
+
+        setBaselineButton.addEventListener(
+            "click",
+            setBaseline,
+        );
+
+        projectList.addEventListener(
+            "click",
+            async (event) => {
+                const button =
+                    event.target.closest(
+                        "button[data-action]",
+                    );
+
+                if (!button) {
+                    return;
+                }
+
+                const projectId =
+                    button.dataset.projectId;
+
+                if (
+                    button.dataset.action
+                    === "create-run"
+                ) {
+                    await createRun(projectId);
+                }
+
+                if (
+                    button.dataset.action
+                    === "import-cases"
+                ) {
+                    await importCases(projectId);
+                }
+            },
+        );
+
+        loadProjects();
+    </script>
+</body>
+</html>

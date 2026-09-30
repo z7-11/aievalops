@@ -1,0 +1,85 @@
+services:
+  db:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_USER: aievalops
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in .env}
+      POSTGRES_DB: aievalops
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U aievalops -d aievalops
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:8-alpine
+    healthcheck:
+      test:
+        - CMD
+        - redis-cli
+        - ping
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build:
+      context: .
+    environment:
+      APP_ENV: ${APP_ENV:-production}
+      DATABASE_URL: postgresql+psycopg://aievalops:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in .env}@db:5432/aievalops
+      REDIS_URL: redis://redis:6379/0
+      LLM_BASE_URL: ${LLM_BASE_URL:-http://host.docker.internal:11434/v1/}
+      LLM_API_KEY: ${LLM_API_KEY:-ollama}
+      LLM_MODEL: ${LLM_MODEL:-qwen3:4b}
+      LLM_MOCK_MODE: ${LLM_MOCK_MODE:-true}
+      RAG_MIN_RELEVANCE_SCORE: ${RAG_MIN_RELEVANCE_SCORE:-0.08}
+    command:
+      - sh
+      - -c
+      - alembic upgrade head && python -m uvicorn app.main:app --host 0.0.0.0 --port 8000
+    ports:
+      - "8000:8000"
+    volumes:
+      - evaluation_results:/app/results
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  worker:
+    build:
+      context: .
+    environment:
+      APP_ENV: ${APP_ENV:-production}
+      DATABASE_URL: postgresql+psycopg://aievalops:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in .env}@db:5432/aievalops
+      REDIS_URL: redis://redis:6379/0
+      LLM_BASE_URL: ${LLM_BASE_URL:-http://host.docker.internal:11434/v1/}
+      LLM_API_KEY: ${LLM_API_KEY:-ollama}
+      LLM_MODEL: ${LLM_MODEL:-qwen3:4b}
+      LLM_MOCK_MODE: ${LLM_MOCK_MODE:-true}
+      RAG_MIN_RELEVANCE_SCORE: ${RAG_MIN_RELEVANCE_SCORE:-0.08}
+    command:
+      - python
+      - -m
+      - celery
+      - -A
+      - app.worker.celery_app
+      - worker
+      - --loglevel=INFO
+    volumes:
+      - evaluation_results:/app/results
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+  evaluation_results:
