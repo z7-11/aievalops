@@ -1,0 +1,59 @@
+description: 向量化客服RAG专项评测
+
+prompts:
+  - "{{question}}"
+
+providers:
+  - id: http
+    label: vector-rag-api
+    config:
+      url: http://127.0.0.1:8000/api/rag/query
+      method: POST
+      headers:
+        Content-Type: application/json
+      body:
+        question: "{{prompt}}"
+        top_k: 3
+      transformResponse: JSON.stringify(json)
+
+defaultTest:
+  options:
+    provider:
+      embedding:
+        id: ollama:embeddings:embeddinggemma:latest
+
+tests:
+  - description: 退款问答
+    vars:
+      question: 商品签收后多久可以退款？
+      expected_source: refund.md
+      expected_answer: 商品签收后7天内可以申请退款
+      expected_evidence: 普通商品签收后 7 天内可以申请无理由退款。
+    assert:
+      - type: similar
+        metric: answer_similarity
+        value: "{{expected_answer}}"
+        threshold: 0.7
+        transform: JSON.parse(output).answer
+
+      - type: javascript
+        metric: retrieval_context_recall
+        value: |
+          const data = JSON.parse(output);
+          const normalize = text => text.replace(/\s+/g, '');
+          return data.sources.some(source =>
+            source.file === context.vars.expected_source &&
+            normalize(source.excerpt).includes(normalize(context.vars.expected_evidence))
+          );
+
+      - type: javascript
+        metric: citation_correctness
+        value: |
+          const data = JSON.parse(output);
+          return data.sources.some(
+            source => source.file === context.vars.expected_source
+          );
+
+      - type: latency
+        metric: latency
+        threshold: 3000

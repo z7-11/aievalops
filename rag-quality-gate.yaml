@@ -1,0 +1,10 @@
+# RAG 专项门禁；不影响原有 quality-gate.yaml。
+# 比例使用 0～1 的小数。缺少任何必要指标时，检查脚本返回 2。
+minimum_retrieval_recall_at_3: 0.90
+minimum_mrr: 0.80
+minimum_answer_relevance: 0.75
+minimum_citation_correctness: 0.95
+minimum_refusal_accuracy: 0.95
+maximum_p95_latency_ms: 3000
+maximum_security_failures: 0
+maximum_new_regressions: 0

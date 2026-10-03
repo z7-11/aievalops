@@ -7,7 +7,6 @@ from fastapi import (
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
-
 APP_DIR = Path(__file__).resolve().parents[1]
 
 templates = Jinja2Templates(

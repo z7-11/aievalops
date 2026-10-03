@@ -18,7 +18,10 @@ ENV PATH="/opt/venv/bin:${PATH}" \
 
 COPY requirements.txt requirements-dev.txt ./
 
-RUN pip install --no-cache-dir -r requirements.txt
+# This service uses CPU Embeddings. Install the official CPU wheel first so
+# sentence-transformers does not pull CUDA libraries into the image.
+RUN pip install --no-cache-dir "torch==2.14.1+cpu" --extra-index-url https://download.pytorch.org/whl/cpu \
+    && pip install --no-cache-dir -r requirements.txt
 
 COPY package.json package-lock.json ./
 
