@@ -1,0 +1,488 @@
+{
+  "retriever": "tfidf_char_2_4gram_same_corpus",
+  "dataset": "evals/evals/datasets/rag_cases.csv",
+  "corpus_files": 10,
+  "corpus_chunks": 13,
+  "chunk_size": 500,
+  "overlap": 80,
+  "top_k": 3,
+  "min_score": 0.08,
+  "evaluated_cases": 21,
+  "skipped_refusal_cases": 2,
+  "metrics": {
+    "source_recall_at_3": 1.0,
+    "evidence_recall_at_3": 1.0,
+    "mrr_at_3": 0.9761904761904762
+  },
+  "counts": {
+    "source_hits": 21,
+    "source_total": 21,
+    "evidence_hits": 21,
+    "evidence_total": 21
+  },
+  "elapsed_seconds": 0.0295,
+  "cases": [
+    {
+      "id": "rag_001",
+      "question": "普通商品签收后几天内可以申请无理由退款？",
+      "passed_after_threshold": true,
+      "source_hits": 1,
+      "evidence_hits": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved": [
+        {
+          "file": "refund.md",
+          "score": 0.3131
+        },
+        {
+          "file": "raw/after_sales.md",
+          "score": 0.2165
+        },
+        {
+          "file": "raw/invoice.md",
+          "score": 0.0427
+        }
+      ]
+    },
+    {
+      "id": "rag_002",
+      "question": "商品有质量问题，签收后多久能申请退款或换货？",
+      "passed_after_threshold": true,
+      "source_hits": 1,
+      "evidence_hits": 1,
+      "reciprocal_rank": 0.5,
+      "retrieved": [
+        {
+          "file": "raw/after_sales.md",
+          "score": 0.2014
+        },
+        {
+          "file": "refund.md",
+          "score": 0.1661
+        },
+        {
+          "file": "raw/invoice.md",
+          "score": 0.0251
+        }
+      ]
+    },
+    {
+      "id": "rag_003",
+      "question": "退款审核通过后，钱多久退回？",
+      "passed_after_threshold": true,
+      "source_hits": 1,
+      "evidence_hits": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved": [
+        {
+          "file": "refund.md",
+          "score": 0.1494
+        },
+        {
+          "file": "raw/after_sales.md",
+          "score": 0.1021
+        },
+        {
+          "file": "coupon.md",
+          "score": 0.0153
+        }
+      ]
+    },
+    {
+      "id": "rag_004",
+      "question": "普通订单付款后多久发货？",
+      "passed_after_threshold": true,
+      "source_hits": 1,
+      "evidence_hits": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved": [
+        {
+          "file": "shipping.md",
+          "score": 0.1675
+        },
+        {
+          "file": "refund.md",
+          "score": 0.0236
+        },
+        {
+          "file": "raw/invoice.md",
+          "score": 0.021
+        }
+      ]
+    },
+    {
+      "id": "rag_005",
+      "question": "物流超过多久不更新可以联系人工客服？",
+      "passed_after_threshold": true,
+      "source_hits": 1,
+      "evidence_hits": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved": [
+        {
+          "file": "shipping.md",
+          "score": 0.1549
+        },
+        {
+          "file": "raw/after_sales.md",
+          "score": 0.0852
+        },
+        {
+          "file": "raw/payment.md",
+          "score": 0.0812
+        }
+      ]
+    },
+    {
+      "id": "rag_006",
+      "question": "订单已经发货了，还能直接取消吗？",
+      "passed_after_threshold": true,
+      "source_hits": 1,
+      "evidence_hits": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved": [
+        {
+          "file": "shipping.md",
+          "score": 0.1944
+        },
+        {
+          "file": "raw/account_security.md",
+          "score": 0.0272
+        },
+        {
+          "file": "raw/invoice.md",
+          "score": 0.0199
+        }
+      ]
+    },
+    {
+      "id": "rag_007",
+      "question": "在线客服每天几点到几点提供服务？",
+      "passed_after_threshold": true,
+      "source_hits": 1,
+      "evidence_hits": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved": [
+        {
+          "file": "service_hours.md",
+          "score": 0.1781
+        },
+        {
+          "file": "raw/privacy.pdf",
+          "score": 0.0389
+        },
+        {
+          "file": "raw/payment.md",
+          "score": 0.016
+        }
+      ]
+    },
+    {
+      "id": "rag_008",
+      "question": "人工客服的服务时间是什么时候？",
+      "passed_after_threshold": true,
+      "source_hits": 1,
+      "evidence_hits": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved": [
+        {
+          "file": "service_hours.md",
+          "score": 0.3324
+        },
+        {
+          "file": "raw/privacy.pdf",
+          "score": 0.0519
+        },
+        {
+          "file": "raw/after_sales.md",
+          "score": 0.0486
+        }
+      ]
+    },
+    {
+      "id": "rag_009",
+      "question": "近12个月消费多少可以升级银卡会员？",
+      "passed_after_threshold": true,
+      "source_hits": 1,
+      "evidence_hits": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved": [
+        {
+          "file": "membership.md",
+          "score": 0.3586
+        },
+        {
+          "file": "refund.md",
+          "score": 0.0109
+        },
+        {
+          "file": "shipping.md",
+          "score": 0.0056
+        }
+      ]
+    },
+    {
+      "id": "rag_010",
+      "question": "金卡会员每消费1元能获得多少积分？",
+      "passed_after_threshold": true,
+      "source_hits": 1,
+      "evidence_hits": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved": [
+        {
+          "file": "membership.md",
+          "score": 0.4171
+        },
+        {
+          "file": "refund.md",
+          "score": 0.0064
+        },
+        {
+          "file": "raw/invoice.md",
+          "score": 0.0051
+        }
+      ]
+    },
+    {
+      "id": "rag_011",
+      "question": "一个订单能同时使用两张优惠券吗？",
+      "passed_after_threshold": true,
+      "source_hits": 1,
+      "evidence_hits": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved": [
+        {
+          "file": "coupon.md",
+          "score": 0.2418
+        },
+        {
+          "file": "refund.md",
+          "score": 0.0554
+        },
+        {
+          "file": "raw/after_sales.md",
+          "score": 0.0344
+        }
+      ]
+    },
+    {
+      "id": "rag_012",
+      "question": "订单取消后，使用的优惠券会退回吗？",
+      "passed_after_threshold": true,
+      "source_hits": 1,
+      "evidence_hits": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved": [
+        {
+          "file": "coupon.md",
+          "score": 0.2187
+        },
+        {
+          "file": "refund.md",
+          "score": 0.0553
+        },
+        {
+          "file": "raw/after_sales.md",
+          "score": 0.0208
+        }
+      ]
+    },
+    {
+      "id": "rag_013",
+      "question": "订单创建后多久不付款会自动关闭？",
+      "passed_after_threshold": true,
+      "source_hits": 1,
+      "evidence_hits": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved": [
+        {
+          "file": "raw/payment.md",
+          "score": 0.1081
+        },
+        {
+          "file": "coupon.md",
+          "score": 0.0201
+        },
+        {
+          "file": "shipping.md",
+          "score": 0.02
+        }
+      ]
+    },
+    {
+      "id": "rag_014",
+      "question": "连续三次支付失败会怎样？",
+      "passed_after_threshold": true,
+      "source_hits": 1,
+      "evidence_hits": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved": [
+        {
+          "file": "raw/payment.md",
+          "score": 0.2249
+        },
+        {
+          "file": "raw/account_security.md",
+          "score": 0.0191
+        },
+        {
+          "file": "raw/payment.md",
+          "score": 0.019
+        }
+      ]
+    },
+    {
+      "id": "rag_015",
+      "question": "确认重复扣款后，退款多久退回？",
+      "passed_after_threshold": true,
+      "source_hits": 1,
+      "evidence_hits": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved": [
+        {
+          "file": "raw/payment.md",
+          "score": 0.1209
+        },
+        {
+          "file": "raw/payment.md",
+          "score": 0.0581
+        },
+        {
+          "file": "refund.md",
+          "score": 0.0401
+        }
+      ]
+    },
+    {
+      "id": "rag_016",
+      "question": "订单完成后多久内可以申请电子发票？",
+      "passed_after_threshold": true,
+      "source_hits": 1,
+      "evidence_hits": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved": [
+        {
+          "file": "raw/invoice.md",
+          "score": 0.2749
+        },
+        {
+          "file": "refund.md",
+          "score": 0.0399
+        },
+        {
+          "file": "raw/privacy.pdf",
+          "score": 0.0393
+        }
+      ]
+    },
+    {
+      "id": "rag_017",
+      "question": "发票开具前可以修改几次抬头或税号？",
+      "passed_after_threshold": true,
+      "source_hits": 1,
+      "evidence_hits": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved": [
+        {
+          "file": "raw/invoice.md",
+          "score": 0.2821
+        },
+        {
+          "file": "raw/account_security.md",
+          "score": 0.0063
+        },
+        {
+          "file": "raw/privacy.pdf",
+          "score": 0.0045
+        }
+      ]
+    },
+    {
+      "id": "rag_018",
+      "question": "商品质量问题退货，寄回运费由谁承担？",
+      "passed_after_threshold": true,
+      "source_hits": 1,
+      "evidence_hits": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved": [
+        {
+          "file": "raw/after_sales.md",
+          "score": 0.2671
+        },
+        {
+          "file": "refund.md",
+          "score": 0.0478
+        },
+        {
+          "file": "service_hours.md",
+          "score": 0.016
+        }
+      ]
+    },
+    {
+      "id": "rag_019",
+      "question": "售后申请提交后多久会完成初步审核？",
+      "passed_after_threshold": true,
+      "source_hits": 1,
+      "evidence_hits": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved": [
+        {
+          "file": "raw/after_sales.md",
+          "score": 0.1087
+        },
+        {
+          "file": "service_hours.md",
+          "score": 0.0942
+        },
+        {
+          "file": "raw/privacy.pdf",
+          "score": 0.0559
+        }
+      ]
+    },
+    {
+      "id": "rag_020",
+      "question": "密码连续输错几次会锁定账号？锁定多久？",
+      "passed_after_threshold": true,
+      "source_hits": 1,
+      "evidence_hits": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved": [
+        {
+          "file": "raw/account_security.md",
+          "score": 0.1269
+        },
+        {
+          "file": "raw/payment.md",
+          "score": 0.0205
+        },
+        {
+          "file": "raw/account_security.md",
+          "score": 0.0183
+        }
+      ]
+    },
+    {
+      "id": "rag_021",
+      "question": "客服会向用户索要短信验证码吗？",
+      "passed_after_threshold": true,
+      "source_hits": 1,
+      "evidence_hits": 1,
+      "reciprocal_rank": 1.0,
+      "retrieved": [
+        {
+          "file": "raw/account_security.md",
+          "score": 0.2133
+        },
+        {
+          "file": "raw/privacy.pdf",
+          "score": 0.0225
+        },
+        {
+          "file": "service_hours.md",
+          "score": 0.0192
+        }
+      ]
+    }
+  ]
+}
