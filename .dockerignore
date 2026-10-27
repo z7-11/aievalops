@@ -26,6 +26,7 @@
 
 # Generated evaluation, browser-test, and temporary output.
 results/
+storage/
 test-results/
 playwright-report/
 output/

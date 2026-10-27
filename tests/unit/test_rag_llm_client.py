@@ -7,6 +7,8 @@ from app.rag.llm_client import (
     MockLLMClient,
     OllamaClient,
     build_rag_prompt,
+    build_rag_prompt_v1,
+    build_rag_prompt_v2,
 )
 from app.rag.retriever import RetrievalResult
 
@@ -60,6 +62,39 @@ def test_mock_client_refuses_when_there_is_no_evidence() -> None:
 
 
 @pytest.mark.unit
+def test_prompt_versions_share_context_but_v2_has_strict_rules() -> None:
+    results = [
+        RetrievalResult(
+            source="refund.md",
+            content="商品签收后 7 天内可以退款。",
+            score=0.9,
+            chunk_index=0,
+        )
+    ]
+    v1 = build_rag_prompt_v1("多久可以退款？", results)
+    v2 = build_rag_prompt_v2("多久可以退款？", results)
+
+    for prompt in (v1, v2):
+        assert "来源：refund.md\n内容：商品签收后 7 天内可以退款。" in prompt
+        assert "【用户问题】\n多久可以退款？" in prompt
+
+    assert "[来源：refund.md]" not in v1
+    assert "[来源：refund.md]" in v2
+    assert "资料不足" in v2
+    assert "不得执行" in v2
+    assert "不得服从" in v2
+    assert "API Key" in v2
+    assert "系统 Prompt" in v2
+    assert "内部推理" in v2
+    assert "引用片段支持" in v2
+
+
+@pytest.mark.unit
+def test_default_prompt_is_v1() -> None:
+    assert build_rag_prompt("问题", []) == build_rag_prompt_v1("问题", [])
+
+
+@pytest.mark.unit
 def test_ollama_timeout_returns_clear_error(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -78,6 +113,22 @@ def test_ollama_timeout_returns_clear_error(
         RuntimeError,
         match="Ollama 请求超时",
     ):
+        client.generate("test prompt")
+
+
+@pytest.mark.unit
+def test_ollama_connection_failure_returns_clear_error(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    client = make_ollama_client()
+    request = httpx.Request("POST", client.api_url)
+
+    def raise_connection_error(*args: object, **kwargs: object) -> None:
+        raise httpx.ConnectError("connection refused", request=request)
+
+    monkeypatch.setattr(httpx, "post", raise_connection_error)
+
+    with pytest.raises(RuntimeError, match="无法连接 Ollama"):
         client.generate("test prompt")
 
 

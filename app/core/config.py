@@ -11,6 +11,16 @@ class Settings(BaseSettings):
     配置值会从 .env 文件中读取。
     """
 
+    rag_retriever_type: str = "chroma"
+    rag_embedding_model: str = "BAAI/bge-small-zh-v1.5"
+    rag_chroma_path: str = "storage/chroma"
+    rag_collection_name: str = "customer_service_bge_500_v1"
+    rag_chunk_size: int = 500
+    rag_chunk_overlap: int = 80
+    rag_top_k: int = 3
+    rag_vector_min_similarity_score: float = 0.45
+    rag_prompt_version: str = "v1"
+
     app_env: str = "development"
 
     database_url: str

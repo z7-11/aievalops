@@ -1,18 +1,16 @@
 import asyncio
+from pathlib import Path
 from time import perf_counter
 
 from fastapi import FastAPI
-
-from pathlib import Path
-
 from fastapi.staticfiles import StaticFiles
 
-from app.api.ui import router as ui_router
 from app.api.baselines import router as baselines_router
 from app.api.projects import router as projects_router
 from app.api.rag import router as rag_router
 from app.api.runs import router as runs_router
 from app.api.test_cases import router as test_cases_router
+from app.api.ui import router as ui_router
 from app.schemas.chat import (
     ChatRequest,
     ChatResponse,

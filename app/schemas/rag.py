@@ -1,3 +1,5 @@
+from typing import Literal
+
 from pydantic import (
     BaseModel,
     Field,
@@ -23,6 +25,11 @@ class RAGRequest(BaseModel):
         description="最多返回多少条参考资料",
     )
 
+    prompt_version: Literal["v1", "v2"] = Field(
+        default="v1",
+        description="用于 Prompt 对比实验的模板版本",
+    )
+
     @field_validator("question")
     @classmethod
     def question_must_not_be_blank(
@@ -38,18 +45,37 @@ class RAGRequest(BaseModel):
 
 
 class RAGSource(BaseModel):
-    """
-    一条知识库引用。
-    """
+    """一条能够追溯到原文的引用。"""
 
     file: str = Field(
-        description="知识库文件名",
+        description="相对于 knowledge 目录的文件路径",
+    )
+
+    page: int | None = Field(
+        default=None,
+        ge=1,
+        description="PDF 页码；Markdown 为 null",
+    )
+
+    chunk_index: int = Field(
+        ge=0,
+        description="文件内的片段序号",
+    )
+
+    chunk_id: str = Field(
+        min_length=1,
+        description="片段唯一 ID",
     )
 
     score: float = Field(
         ge=0,
         le=1,
-        description="文本相似度",
+        description="检索相关性分数",
+    )
+
+    excerpt: str = Field(
+        min_length=1,
+        description="实际提供给模型的引用原文",
     )
 
 

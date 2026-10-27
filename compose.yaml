@@ -38,6 +38,8 @@ services:
       LLM_MODEL: ${LLM_MODEL:-qwen3:4b}
       LLM_MOCK_MODE: ${LLM_MOCK_MODE:-true}
       RAG_MIN_RELEVANCE_SCORE: ${RAG_MIN_RELEVANCE_SCORE:-0.08}
+      HF_HOME: /app/storage/huggingface
+      RAG_CHROMA_PATH: /app/storage/chroma
     command:
       - sh
       - -c
@@ -46,6 +48,8 @@ services:
       - "8000:8000"
     volumes:
       - evaluation_results:/app/results
+      - chroma_data:/app/storage/chroma
+      - huggingface_cache:/app/storage/huggingface
     depends_on:
       db:
         condition: service_healthy
@@ -64,6 +68,8 @@ services:
       LLM_MODEL: ${LLM_MODEL:-qwen3:4b}
       LLM_MOCK_MODE: ${LLM_MOCK_MODE:-true}
       RAG_MIN_RELEVANCE_SCORE: ${RAG_MIN_RELEVANCE_SCORE:-0.08}
+      HF_HOME: /app/storage/huggingface
+      RAG_CHROMA_PATH: /app/storage/chroma
     command:
       - python
       - -m
@@ -74,6 +80,8 @@ services:
       - --loglevel=INFO
     volumes:
       - evaluation_results:/app/results
+      - chroma_data:/app/storage/chroma
+      - huggingface_cache:/app/storage/huggingface
     depends_on:
       db:
         condition: service_healthy
@@ -83,3 +91,5 @@ services:
 volumes:
   postgres_data:
   evaluation_results:
+  chroma_data:
+  huggingface_cache:

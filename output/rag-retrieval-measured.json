@@ -1,0 +1,725 @@
+{
+  "experiment_id": null,
+  "dataset": "D:\\AICKproject\\promptfoo\\evals\\evals\\datasets\\rag_cases.csv",
+  "collection": "customer_service_bge_500_v1",
+  "embedding_model": "BAAI/bge-small-zh-v1.5",
+  "chunk_size": null,
+  "overlap": null,
+  "index_count": 13,
+  "top_k": 3,
+  "min_score": 0.45,
+  "evaluated_cases": 21,
+  "skipped_refusal_cases": 2,
+  "metrics": {
+    "raw_source_recall_at_k": 0.9523809523809523,
+    "raw_evidence_recall_at_k": 0.9523809523809523,
+    "raw_mrr_at_k": 0.9047619047619048,
+    "source_recall_after_threshold_at_k": 0.9523809523809523,
+    "evidence_recall_after_threshold_at_k": 0.9523809523809523,
+    "mrr": 0.9047619047619048
+  },
+  "counts": {
+    "raw_source_hits": 20,
+    "raw_evidence_hits": 20,
+    "source_hits": 20,
+    "source_total": 21,
+    "evidence_hits": 20,
+    "evidence_total": 21
+  },
+  "elapsed_seconds": 2.77,
+  "cases": [
+    {
+      "id": "rag_001",
+      "question": "普通商品签收后几天内可以申请无理由退款？",
+      "passed_after_threshold": true,
+      "source_hits": 1,
+      "source_total": 1,
+      "evidence_hits": 1,
+      "evidence_total": 1,
+      "raw_source_hits": 1,
+      "raw_evidence_hits": 1,
+      "reciprocal_rank": 1.0,
+      "raw_reciprocal_rank": 1.0,
+      "retrieved": [
+        {
+          "file": "refund.md",
+          "score": 0.8398,
+          "chunk_id": "c424e8c89eb1405edf12b1bf",
+          "passed_threshold": true
+        },
+        {
+          "file": "raw/after_sales.md",
+          "score": 0.7866,
+          "chunk_id": "6f833c792a4ab649825d689f",
+          "passed_threshold": true
+        },
+        {
+          "file": "raw/after_sales.md",
+          "score": 0.6733,
+          "chunk_id": "b988f38e475d22ae62877eff",
+          "passed_threshold": true
+        }
+      ]
+    },
+    {
+      "id": "rag_002",
+      "question": "商品有质量问题，签收后多久能申请退款或换货？",
+      "passed_after_threshold": true,
+      "source_hits": 1,
+      "source_total": 1,
+      "evidence_hits": 1,
+      "evidence_total": 1,
+      "raw_source_hits": 1,
+      "raw_evidence_hits": 1,
+      "reciprocal_rank": 0.5,
+      "raw_reciprocal_rank": 0.5,
+      "retrieved": [
+        {
+          "file": "raw/after_sales.md",
+          "score": 0.7918,
+          "chunk_id": "6f833c792a4ab649825d689f",
+          "passed_threshold": true
+        },
+        {
+          "file": "refund.md",
+          "score": 0.7374,
+          "chunk_id": "c424e8c89eb1405edf12b1bf",
+          "passed_threshold": true
+        },
+        {
+          "file": "raw/after_sales.md",
+          "score": 0.708,
+          "chunk_id": "b988f38e475d22ae62877eff",
+          "passed_threshold": true
+        }
+      ]
+    },
+    {
+      "id": "rag_003",
+      "question": "退款审核通过后，钱多久退回？",
+      "passed_after_threshold": true,
+      "source_hits": 1,
+      "source_total": 1,
+      "evidence_hits": 1,
+      "evidence_total": 1,
+      "raw_source_hits": 1,
+      "raw_evidence_hits": 1,
+      "reciprocal_rank": 1.0,
+      "raw_reciprocal_rank": 1.0,
+      "retrieved": [
+        {
+          "file": "refund.md",
+          "score": 0.6978,
+          "chunk_id": "c424e8c89eb1405edf12b1bf",
+          "passed_threshold": true
+        },
+        {
+          "file": "raw/after_sales.md",
+          "score": 0.6952,
+          "chunk_id": "b988f38e475d22ae62877eff",
+          "passed_threshold": true
+        },
+        {
+          "file": "raw/after_sales.md",
+          "score": 0.6907,
+          "chunk_id": "6f833c792a4ab649825d689f",
+          "passed_threshold": true
+        }
+      ]
+    },
+    {
+      "id": "rag_004",
+      "question": "普通订单付款后多久发货？",
+      "passed_after_threshold": true,
+      "source_hits": 1,
+      "source_total": 1,
+      "evidence_hits": 1,
+      "evidence_total": 1,
+      "raw_source_hits": 1,
+      "raw_evidence_hits": 1,
+      "reciprocal_rank": 1.0,
+      "raw_reciprocal_rank": 1.0,
+      "retrieved": [
+        {
+          "file": "shipping.md",
+          "score": 0.7723,
+          "chunk_id": "400ce92f0b589e61cde0a646",
+          "passed_threshold": true
+        },
+        {
+          "file": "raw/after_sales.md",
+          "score": 0.6203,
+          "chunk_id": "6f833c792a4ab649825d689f",
+          "passed_threshold": true
+        },
+        {
+          "file": "service_hours.md",
+          "score": 0.6092,
+          "chunk_id": "cc67b88665dab7e58d7fa01c",
+          "passed_threshold": true
+        }
+      ]
+    },
+    {
+      "id": "rag_005",
+      "question": "物流超过多久不更新可以联系人工客服？",
+      "passed_after_threshold": true,
+      "source_hits": 1,
+      "source_total": 1,
+      "evidence_hits": 1,
+      "evidence_total": 1,
+      "raw_source_hits": 1,
+      "raw_evidence_hits": 1,
+      "reciprocal_rank": 0.5,
+      "raw_reciprocal_rank": 0.5,
+      "retrieved": [
+        {
+          "file": "service_hours.md",
+          "score": 0.7116,
+          "chunk_id": "cc67b88665dab7e58d7fa01c",
+          "passed_threshold": true
+        },
+        {
+          "file": "shipping.md",
+          "score": 0.6941,
+          "chunk_id": "400ce92f0b589e61cde0a646",
+          "passed_threshold": true
+        },
+        {
+          "file": "raw/payment.md",
+          "score": 0.6148,
+          "chunk_id": "8de3db6011121f0e3221c972",
+          "passed_threshold": true
+        }
+      ]
+    },
+    {
+      "id": "rag_006",
+      "question": "订单已经发货了，还能直接取消吗？",
+      "passed_after_threshold": true,
+      "source_hits": 1,
+      "source_total": 1,
+      "evidence_hits": 1,
+      "evidence_total": 1,
+      "raw_source_hits": 1,
+      "raw_evidence_hits": 1,
+      "reciprocal_rank": 1.0,
+      "raw_reciprocal_rank": 1.0,
+      "retrieved": [
+        {
+          "file": "shipping.md",
+          "score": 0.6786,
+          "chunk_id": "400ce92f0b589e61cde0a646",
+          "passed_threshold": true
+        },
+        {
+          "file": "refund.md",
+          "score": 0.6227,
+          "chunk_id": "c424e8c89eb1405edf12b1bf",
+          "passed_threshold": true
+        },
+        {
+          "file": "raw/after_sales.md",
+          "score": 0.6065,
+          "chunk_id": "6f833c792a4ab649825d689f",
+          "passed_threshold": true
+        }
+      ]
+    },
+    {
+      "id": "rag_007",
+      "question": "在线客服每天几点到几点提供服务？",
+      "passed_after_threshold": true,
+      "source_hits": 1,
+      "source_total": 1,
+      "evidence_hits": 1,
+      "evidence_total": 1,
+      "raw_source_hits": 1,
+      "raw_evidence_hits": 1,
+      "reciprocal_rank": 1.0,
+      "raw_reciprocal_rank": 1.0,
+      "retrieved": [
+        {
+          "file": "service_hours.md",
+          "score": 0.7136,
+          "chunk_id": "cc67b88665dab7e58d7fa01c",
+          "passed_threshold": true
+        },
+        {
+          "file": "shipping.md",
+          "score": 0.5913,
+          "chunk_id": "400ce92f0b589e61cde0a646",
+          "passed_threshold": true
+        },
+        {
+          "file": "raw/privacy.pdf",
+          "score": 0.5327,
+          "chunk_id": "4469a841a0ec1cad06b20075",
+          "passed_threshold": true
+        }
+      ]
+    },
+    {
+      "id": "rag_008",
+      "question": "人工客服的服务时间是什么时候？",
+      "passed_after_threshold": true,
+      "source_hits": 1,
+      "source_total": 1,
+      "evidence_hits": 1,
+      "evidence_total": 1,
+      "raw_source_hits": 1,
+      "raw_evidence_hits": 1,
+      "reciprocal_rank": 1.0,
+      "raw_reciprocal_rank": 1.0,
+      "retrieved": [
+        {
+          "file": "service_hours.md",
+          "score": 0.7562,
+          "chunk_id": "cc67b88665dab7e58d7fa01c",
+          "passed_threshold": true
+        },
+        {
+          "file": "shipping.md",
+          "score": 0.5594,
+          "chunk_id": "400ce92f0b589e61cde0a646",
+          "passed_threshold": true
+        },
+        {
+          "file": "raw/privacy.pdf",
+          "score": 0.5295,
+          "chunk_id": "4469a841a0ec1cad06b20075",
+          "passed_threshold": true
+        }
+      ]
+    },
+    {
+      "id": "rag_009",
+      "question": "近12个月消费多少可以升级银卡会员？",
+      "passed_after_threshold": true,
+      "source_hits": 1,
+      "source_total": 1,
+      "evidence_hits": 1,
+      "evidence_total": 1,
+      "raw_source_hits": 1,
+      "raw_evidence_hits": 1,
+      "reciprocal_rank": 1.0,
+      "raw_reciprocal_rank": 1.0,
+      "retrieved": [
+        {
+          "file": "membership.md",
+          "score": 0.7574,
+          "chunk_id": "dacc7c1a66d1dcb26482a27b",
+          "passed_threshold": true
+        },
+        {
+          "file": "raw/payment.md",
+          "score": 0.557,
+          "chunk_id": "8de3db6011121f0e3221c972",
+          "passed_threshold": true
+        },
+        {
+          "file": "raw/payment.md",
+          "score": 0.4984,
+          "chunk_id": "23d4a82c8c3e3a9589d06d33",
+          "passed_threshold": true
+        }
+      ]
+    },
+    {
+      "id": "rag_010",
+      "question": "金卡会员每消费1元能获得多少积分？",
+      "passed_after_threshold": true,
+      "source_hits": 1,
+      "source_total": 1,
+      "evidence_hits": 1,
+      "evidence_total": 1,
+      "raw_source_hits": 1,
+      "raw_evidence_hits": 1,
+      "reciprocal_rank": 1.0,
+      "raw_reciprocal_rank": 1.0,
+      "retrieved": [
+        {
+          "file": "membership.md",
+          "score": 0.7516,
+          "chunk_id": "dacc7c1a66d1dcb26482a27b",
+          "passed_threshold": true
+        },
+        {
+          "file": "coupon.md",
+          "score": 0.4889,
+          "chunk_id": "aa577db7839a7344c240a044",
+          "passed_threshold": true
+        },
+        {
+          "file": "raw/after_sales.md",
+          "score": 0.4511,
+          "chunk_id": "b988f38e475d22ae62877eff",
+          "passed_threshold": true
+        }
+      ]
+    },
+    {
+      "id": "rag_011",
+      "question": "一个订单能同时使用两张优惠券吗？",
+      "passed_after_threshold": true,
+      "source_hits": 1,
+      "source_total": 1,
+      "evidence_hits": 1,
+      "evidence_total": 1,
+      "raw_source_hits": 1,
+      "raw_evidence_hits": 1,
+      "reciprocal_rank": 1.0,
+      "raw_reciprocal_rank": 1.0,
+      "retrieved": [
+        {
+          "file": "coupon.md",
+          "score": 0.6421,
+          "chunk_id": "aa577db7839a7344c240a044",
+          "passed_threshold": true
+        },
+        {
+          "file": "refund.md",
+          "score": 0.5436,
+          "chunk_id": "c424e8c89eb1405edf12b1bf",
+          "passed_threshold": true
+        },
+        {
+          "file": "raw/after_sales.md",
+          "score": 0.5269,
+          "chunk_id": "b988f38e475d22ae62877eff",
+          "passed_threshold": true
+        }
+      ]
+    },
+    {
+      "id": "rag_012",
+      "question": "订单取消后，使用的优惠券会退回吗？",
+      "passed_after_threshold": true,
+      "source_hits": 1,
+      "source_total": 1,
+      "evidence_hits": 1,
+      "evidence_total": 1,
+      "raw_source_hits": 1,
+      "raw_evidence_hits": 1,
+      "reciprocal_rank": 1.0,
+      "raw_reciprocal_rank": 1.0,
+      "retrieved": [
+        {
+          "file": "coupon.md",
+          "score": 0.7251,
+          "chunk_id": "aa577db7839a7344c240a044",
+          "passed_threshold": true
+        },
+        {
+          "file": "raw/after_sales.md",
+          "score": 0.7023,
+          "chunk_id": "b988f38e475d22ae62877eff",
+          "passed_threshold": true
+        },
+        {
+          "file": "refund.md",
+          "score": 0.702,
+          "chunk_id": "c424e8c89eb1405edf12b1bf",
+          "passed_threshold": true
+        }
+      ]
+    },
+    {
+      "id": "rag_013",
+      "question": "订单创建后多久不付款会自动关闭？",
+      "passed_after_threshold": true,
+      "source_hits": 1,
+      "source_total": 1,
+      "evidence_hits": 1,
+      "evidence_total": 1,
+      "raw_source_hits": 1,
+      "raw_evidence_hits": 1,
+      "reciprocal_rank": 1.0,
+      "raw_reciprocal_rank": 1.0,
+      "retrieved": [
+        {
+          "file": "raw/payment.md",
+          "score": 0.6437,
+          "chunk_id": "23d4a82c8c3e3a9589d06d33",
+          "passed_threshold": true
+        },
+        {
+          "file": "shipping.md",
+          "score": 0.6344,
+          "chunk_id": "400ce92f0b589e61cde0a646",
+          "passed_threshold": true
+        },
+        {
+          "file": "refund.md",
+          "score": 0.5976,
+          "chunk_id": "c424e8c89eb1405edf12b1bf",
+          "passed_threshold": true
+        }
+      ]
+    },
+    {
+      "id": "rag_014",
+      "question": "连续三次支付失败会怎样？",
+      "passed_after_threshold": true,
+      "source_hits": 1,
+      "source_total": 1,
+      "evidence_hits": 1,
+      "evidence_total": 1,
+      "raw_source_hits": 1,
+      "raw_evidence_hits": 1,
+      "reciprocal_rank": 1.0,
+      "raw_reciprocal_rank": 1.0,
+      "retrieved": [
+        {
+          "file": "raw/payment.md",
+          "score": 0.6361,
+          "chunk_id": "23d4a82c8c3e3a9589d06d33",
+          "passed_threshold": true
+        },
+        {
+          "file": "raw/payment.md",
+          "score": 0.5673,
+          "chunk_id": "8de3db6011121f0e3221c972",
+          "passed_threshold": true
+        },
+        {
+          "file": "raw/account_security.md",
+          "score": 0.5042,
+          "chunk_id": "95f80546e9af5409527a4d63",
+          "passed_threshold": true
+        }
+      ]
+    },
+    {
+      "id": "rag_015",
+      "question": "确认重复扣款后，退款多久退回？",
+      "passed_after_threshold": false,
+      "source_hits": 0,
+      "source_total": 1,
+      "evidence_hits": 0,
+      "evidence_total": 1,
+      "raw_source_hits": 0,
+      "raw_evidence_hits": 0,
+      "reciprocal_rank": 0.0,
+      "raw_reciprocal_rank": 0.0,
+      "retrieved": [
+        {
+          "file": "raw/after_sales.md",
+          "score": 0.7014,
+          "chunk_id": "b988f38e475d22ae62877eff",
+          "passed_threshold": true
+        },
+        {
+          "file": "refund.md",
+          "score": 0.6735,
+          "chunk_id": "c424e8c89eb1405edf12b1bf",
+          "passed_threshold": true
+        },
+        {
+          "file": "raw/after_sales.md",
+          "score": 0.6714,
+          "chunk_id": "6f833c792a4ab649825d689f",
+          "passed_threshold": true
+        }
+      ]
+    },
+    {
+      "id": "rag_016",
+      "question": "订单完成后多久内可以申请电子发票？",
+      "passed_after_threshold": true,
+      "source_hits": 1,
+      "source_total": 1,
+      "evidence_hits": 1,
+      "evidence_total": 1,
+      "raw_source_hits": 1,
+      "raw_evidence_hits": 1,
+      "reciprocal_rank": 1.0,
+      "raw_reciprocal_rank": 1.0,
+      "retrieved": [
+        {
+          "file": "raw/invoice.md",
+          "score": 0.7826,
+          "chunk_id": "87691a6d96c62b3ce7688110",
+          "passed_threshold": true
+        },
+        {
+          "file": "shipping.md",
+          "score": 0.6524,
+          "chunk_id": "400ce92f0b589e61cde0a646",
+          "passed_threshold": true
+        },
+        {
+          "file": "raw/after_sales.md",
+          "score": 0.6263,
+          "chunk_id": "6f833c792a4ab649825d689f",
+          "passed_threshold": true
+        }
+      ]
+    },
+    {
+      "id": "rag_017",
+      "question": "发票开具前可以修改几次抬头或税号？",
+      "passed_after_threshold": true,
+      "source_hits": 1,
+      "source_total": 1,
+      "evidence_hits": 1,
+      "evidence_total": 1,
+      "raw_source_hits": 1,
+      "raw_evidence_hits": 1,
+      "reciprocal_rank": 1.0,
+      "raw_reciprocal_rank": 1.0,
+      "retrieved": [
+        {
+          "file": "raw/invoice.md",
+          "score": 0.714,
+          "chunk_id": "87691a6d96c62b3ce7688110",
+          "passed_threshold": true
+        },
+        {
+          "file": "raw/payment.md",
+          "score": 0.5336,
+          "chunk_id": "8de3db6011121f0e3221c972",
+          "passed_threshold": true
+        },
+        {
+          "file": "raw/after_sales.md",
+          "score": 0.4929,
+          "chunk_id": "b988f38e475d22ae62877eff",
+          "passed_threshold": true
+        }
+      ]
+    },
+    {
+      "id": "rag_018",
+      "question": "商品质量问题退货，寄回运费由谁承担？",
+      "passed_after_threshold": true,
+      "source_hits": 1,
+      "source_total": 1,
+      "evidence_hits": 1,
+      "evidence_total": 1,
+      "raw_source_hits": 1,
+      "raw_evidence_hits": 1,
+      "reciprocal_rank": 1.0,
+      "raw_reciprocal_rank": 1.0,
+      "retrieved": [
+        {
+          "file": "raw/after_sales.md",
+          "score": 0.6438,
+          "chunk_id": "6f833c792a4ab649825d689f",
+          "passed_threshold": true
+        },
+        {
+          "file": "raw/after_sales.md",
+          "score": 0.6291,
+          "chunk_id": "b988f38e475d22ae62877eff",
+          "passed_threshold": true
+        },
+        {
+          "file": "refund.md",
+          "score": 0.5576,
+          "chunk_id": "c424e8c89eb1405edf12b1bf",
+          "passed_threshold": true
+        }
+      ]
+    },
+    {
+      "id": "rag_019",
+      "question": "售后申请提交后多久会完成初步审核？",
+      "passed_after_threshold": true,
+      "source_hits": 1,
+      "source_total": 1,
+      "evidence_hits": 1,
+      "evidence_total": 1,
+      "raw_source_hits": 1,
+      "raw_evidence_hits": 1,
+      "reciprocal_rank": 1.0,
+      "raw_reciprocal_rank": 1.0,
+      "retrieved": [
+        {
+          "file": "raw/after_sales.md",
+          "score": 0.6783,
+          "chunk_id": "6f833c792a4ab649825d689f",
+          "passed_threshold": true
+        },
+        {
+          "file": "shipping.md",
+          "score": 0.6446,
+          "chunk_id": "400ce92f0b589e61cde0a646",
+          "passed_threshold": true
+        },
+        {
+          "file": "raw/invoice.md",
+          "score": 0.6161,
+          "chunk_id": "87691a6d96c62b3ce7688110",
+          "passed_threshold": true
+        }
+      ]
+    },
+    {
+      "id": "rag_020",
+      "question": "密码连续输错几次会锁定账号？锁定多久？",
+      "passed_after_threshold": true,
+      "source_hits": 1,
+      "source_total": 1,
+      "evidence_hits": 1,
+      "evidence_total": 1,
+      "raw_source_hits": 1,
+      "raw_evidence_hits": 1,
+      "reciprocal_rank": 1.0,
+      "raw_reciprocal_rank": 1.0,
+      "retrieved": [
+        {
+          "file": "raw/account_security.md",
+          "score": 0.6864,
+          "chunk_id": "205d9f6b4d7fb50f1c9474c5",
+          "passed_threshold": true
+        },
+        {
+          "file": "raw/privacy.pdf",
+          "score": 0.5537,
+          "chunk_id": "4469a841a0ec1cad06b20075",
+          "passed_threshold": true
+        },
+        {
+          "file": "raw/account_security.md",
+          "score": 0.5355,
+          "chunk_id": "95f80546e9af5409527a4d63",
+          "passed_threshold": true
+        }
+      ]
+    },
+    {
+      "id": "rag_021",
+      "question": "客服会向用户索要短信验证码吗？",
+      "passed_after_threshold": true,
+      "source_hits": 1,
+      "source_total": 1,
+      "evidence_hits": 1,
+      "evidence_total": 1,
+      "raw_source_hits": 1,
+      "raw_evidence_hits": 1,
+      "reciprocal_rank": 1.0,
+      "raw_reciprocal_rank": 1.0,
+      "retrieved": [
+        {
+          "file": "raw/account_security.md",
+          "score": 0.5981,
+          "chunk_id": "205d9f6b4d7fb50f1c9474c5",
+          "passed_threshold": true
+        },
+        {
+          "file": "raw/privacy.pdf",
+          "score": 0.5966,
+          "chunk_id": "4469a841a0ec1cad06b20075",
+          "passed_threshold": true
+        },
+        {
+          "file": "raw/account_security.md",
+          "score": 0.5606,
+          "chunk_id": "95f80546e9af5409527a4d63",
+          "passed_threshold": true
+        }
+      ]
+    }
+  ]
+}
